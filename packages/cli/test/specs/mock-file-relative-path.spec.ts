@@ -20,4 +20,40 @@ describe('Relative file path', () => {
         expect(context.stdout).to.contain('Server started');
       }
     );
+
+  test
+    .stdout()
+    .command(['start', '--data', './test/data/envs/file.json'])
+    .do(async () => {
+      const result = await axios.get('http://localhost:3000/param2/file1');
+
+      expect(result.data).to.contain('filecontent');
+    })
+    .finally(() => {
+      process.emit('SIGINT');
+    })
+    .it(
+      'should get the file content with a relative templated path when it stays within the static base',
+      (context) => {
+        expect(context.stdout).to.contain('Server started');
+      }
+    );
+
+  test
+    .stdout()
+    .command(['start', '--data', './test/data/envs/file.json'])
+    .do(async () => {
+      const result = await axios.get('http://localhost:3000/testfile/1');
+
+      expect(result.data).to.contain('filecontent');
+    })
+    .finally(() => {
+      process.emit('SIGINT');
+    })
+    .it(
+      'should get a partially templated file when the helper is in the middle of the file name',
+      (context) => {
+        expect(context.stdout).to.contain('Server started');
+      }
+    );
 });
